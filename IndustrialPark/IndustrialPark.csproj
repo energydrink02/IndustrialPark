@@ -982,10 +982,10 @@
 for /d %25%25G in ("$(TargetDir)build_test*") do rd  /s /q %25%25G &amp;&amp; echo Deleted Directory: %25%25G
 :: Delete all orderlog files
  del "$(TargetDir)*orderlog.txt"
+)
 :: Move all assemblies and related files to lib folder
-:: ROBOCOPY "$(TargetDir) " "$(TargetDir)lib\ " /XF *.exe *.config *.json *.manifest *.xml *.pdb *.txt *.cmd *.application /XD app.publish Resources runtimes lib logs data /E /IS /MOVE
+ROBOCOPY "$(TargetDir) " "$(TargetDir)lib\ " /XF *.exe *.config *.json *.manifest *.xml *.pdb *.txt *.cmd *.application /XD app.publish Resources runtimes lib logs data /E /IS /MOVE
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25
-) ELSE (
 cd $(TargetDir)
 del *.xml
 del *.pdb
@@ -994,8 +994,7 @@ del *.manifest
 del *.application
 del *.json
 rd /s /q "app.publish"
-del *.cmd
-)</PostBuildEvent>
+del *.cmd</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\AssimpNet.4.1.0\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.4.1.0\build\AssimpNet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

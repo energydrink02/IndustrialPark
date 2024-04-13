@@ -288,6 +288,8 @@ namespace IndustrialPark
                                 if (ex is NativeDataPLG_0510 nativeData)
                                     if (nativeData.nativeDataStruct.nativeDataType == NativeDataType.GameCube)
                                         ApplyVertexColors(nativeData.nativeDataStruct.nativeData, getColor);
+                                    else if (nativeData.nativeDataStruct.nativeDataType == NativeDataType.PS2)
+                                        ApplyVertexColors(nativeData.nativeDataStruct.nativeDataPs2, getColor);
 
             Data = ReadFileMethods.ExportRenderWareFile(sections, renderWareVersion);
             if (Program.MainForm != null)
@@ -314,6 +316,22 @@ namespace IndustrialPark
                             (byte)(newColor.W * 255));
                     }
                 }
+        }
+
+        private void ApplyVertexColors(NativeDataPS2 nativeData, Func<Vector4, Vector4> getColor)
+        {
+            foreach (var batch in nativeData.Batches)
+                foreach (var cluster in batch.Clusters)
+                    if (cluster is ClusterColor)
+                    {
+                        var cd = ((ClusterColor)cluster).entryList;
+                        for (int i = 0; i < cd.Count; i++)
+                        {
+                            RenderWareFile.Color oldColor = cd[i];
+                            Vector4 newColor = getColor(new Vector4(oldColor.R / 255f, oldColor.G / 255f, oldColor.B / 255f, oldColor.A / 255f));
+                            cd[i] = new RenderWareFile.Color((byte)(newColor.X * 255), (byte)(newColor.Y * 255), (byte)(newColor.Z * 255), (byte)(newColor.W * 255));
+                        }
+                    }
         }
 
         private void ApplyVertexColors(Geometry_000F geometry, Func<Vector4, Vector4> getColor)
@@ -396,7 +414,7 @@ namespace IndustrialPark
         {
             var allVertices = new List<Vector3>();
 
-            if ((geo.geometryStruct.geometryFlags2 & GeometryFlags2.isNativeGeometry) == 0)
+            if ((geo.geometryStruct.geometryFlags & GeometryFlags.rpGEOMETRYNATIVE) == 0)
             {
                 ApplyTransformation(transform, geo.geometryStruct, ref allVertices);
             }
