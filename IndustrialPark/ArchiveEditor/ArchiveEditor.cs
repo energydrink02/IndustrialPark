@@ -1491,6 +1491,8 @@ namespace IndustrialPark
         private void ArchiveEditor_Deactivate(object sender, EventArgs e)
         {
             PressedKeys.Clear();
+            if (!OwnedForms.Any() && Program.MainForm.TranslucentWhenOutOfFocus)
+                Opacity = 0.5f;
         }
 
         /// <summary>
@@ -2062,6 +2064,14 @@ namespace IndustrialPark
             PopulateAssetListAndComboBox();
             if (skipped.Any())
                 MessageBox.Show($"Following models were skipped:\n{string.Join("\n", skipped)}", $"{skipped.Count} models skipped", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+
+        private void ArchiveEditor_Activated(object sender, EventArgs e)
+        {
+            Opacity = 1f;
+            foreach (var child in OwnedForms)
+                child.SendToBack();
+            BringToFront();
         }
     }
 }

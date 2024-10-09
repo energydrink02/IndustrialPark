@@ -173,6 +173,8 @@ namespace IndustrialPark
             BuildISO.recentGameDirPaths = settings.recentBuildIsoGamePaths;
             
             setFlyCursor(settings.flyModeCursor);
+            TranslucentWhenOutOfFocus = settings.translucentEditor;
+            translucentFocusToolStripMenuItem.Checked = TranslucentWhenOutOfFocus;
 
             foreach (string filepath in settings.recentArchivePaths)
                 SetRecentOpenedArchives(filepath);
@@ -248,7 +250,8 @@ namespace IndustrialPark
                 pcsx2Path = BuildISO.PCSX2Path,
                 recentBuildIsoGamePaths = BuildISO.recentGameDirPaths,
                 recentArchivePaths = openLastToolStripMenuItem.DropDownItems.Cast<ToolStripMenuItem>().Select(x => x.Text).ToArray(),
-                flyModeCursor = (int)flyModeCursor
+                flyModeCursor = (int)flyModeCursor,
+                translucentEditor = TranslucentWhenOutOfFocus,
             };
 
             File.WriteAllText(pathToSettings, JsonConvert.SerializeObject(settings, Formatting.Indented));
@@ -538,6 +541,7 @@ namespace IndustrialPark
         private FlyModeCursor flyModeCursor = FlyModeCursor.Crosshair;
         private System.Drawing.Point MouseCenter;
         private MouseEventArgs oldMousePosition = new MouseEventArgs(MouseButtons.None, 0, 0, 0, 0);
+        public bool TranslucentWhenOutOfFocus;
 
         private void MouseMoveControl(object sender, MouseEventArgs e)
         {
@@ -1693,6 +1697,8 @@ namespace IndustrialPark
                 Program.DynaSearch.TopMost = value;
             if (Program.PickupSearch != null)
                 Program.PickupSearch.TopMost = value;
+            if (Program.BuildISO != null)
+                Program.BuildISO.TopMost = value;
 
             foreach (ArchiveEditor ae in archiveEditors)
                 ae.SetAllTopMost(value);
@@ -2029,6 +2035,18 @@ namespace IndustrialPark
             // Updaate the toolstrip dropdown items
             foreach (ToolStripMenuItem item in cursorInFlyModeToolStripMenuItem.DropDownItems)
                 item.Checked = Convert.ToInt32(item.Tag) == flyModeCursor;
+        }
+
+        private void translucentFocusToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TranslucentWhenOutOfFocus = translucentFocusToolStripMenuItem.Checked;
+
+            if (!translucentFocusToolStripMenuItem.Checked)
+                archiveEditors.ForEach(editor => editor.Opacity = 1f);
+            else
+                foreach (ArchiveEditor ae in archiveEditors)
+                    if (!ae.Focused)
+                        ae.Opacity = 0.5f;
         }
     }
 }
