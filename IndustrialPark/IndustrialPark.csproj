@@ -195,7 +195,7 @@
     <Folder Include="Resources\CountryFlagIcons\" />
   </ItemGroup>
   <ItemGroup>
-	<PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
+	<PackageReference Include="CCd.AssimpNet" Version="5.4.2409" />
     <PackageReference Include="DiscordRichPresence" Version="1.2.1.24" />
     <PackageReference Include="DSoft.SharpDX.Desktop" Version="4.3.2406.51" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
