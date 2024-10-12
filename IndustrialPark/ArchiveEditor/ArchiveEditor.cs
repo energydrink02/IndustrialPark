@@ -191,7 +191,6 @@ namespace IndustrialPark
             {
                 Program.MainForm.SetToolStripItemName(this, Text);
                 Program.MainForm.SetRecentOpenedArchives(fileName);
-                Show();
             }
         }
 

@@ -47,6 +47,7 @@ namespace IndustrialPark
             toolStripSeparator5 = new ToolStripSeparator();
             autoSaveOnClosingToolStripMenuItem = new ToolStripMenuItem();
             autoLoadOnStartupToolStripMenuItem = new ToolStripMenuItem();
+            showEditorsWhenLoadingProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             optionsToolStripMenuItem = new ToolStripMenuItem();
             viewConfigToolStripMenuItem = new ToolStripMenuItem();
             viewControlsToolStripMenuItem = new ToolStripMenuItem();
@@ -188,7 +189,7 @@ namespace IndustrialPark
             // 
             // projectToolStripMenuItem
             // 
-            projectToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem1, openToolStripMenuItem, saveToolStripMenuItem, saveAsToolStripMenuItem, toolStripSeparator5, autoSaveOnClosingToolStripMenuItem, autoLoadOnStartupToolStripMenuItem });
+            projectToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem1, openToolStripMenuItem, saveToolStripMenuItem, saveAsToolStripMenuItem, toolStripSeparator5, autoSaveOnClosingToolStripMenuItem, autoLoadOnStartupToolStripMenuItem, showEditorsWhenLoadingProjectToolStripMenuItem });
             projectToolStripMenuItem.Name = "projectToolStripMenuItem";
             resources.ApplyResources(projectToolStripMenuItem, "projectToolStripMenuItem");
             // 
@@ -236,6 +237,14 @@ namespace IndustrialPark
             autoLoadOnStartupToolStripMenuItem.Name = "autoLoadOnStartupToolStripMenuItem";
             resources.ApplyResources(autoLoadOnStartupToolStripMenuItem, "autoLoadOnStartupToolStripMenuItem");
             autoLoadOnStartupToolStripMenuItem.Click += autoLoadOnStartupToolStripMenuItem_Click;
+            // 
+            // showEditorsWhenLoadingProjectToolStripMenuItem
+            // 
+            showEditorsWhenLoadingProjectToolStripMenuItem.Checked = true;
+            showEditorsWhenLoadingProjectToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            showEditorsWhenLoadingProjectToolStripMenuItem.Name = "showEditorsWhenLoadingProjectToolStripMenuItem";
+            resources.ApplyResources(showEditorsWhenLoadingProjectToolStripMenuItem, "showEditorsWhenLoadingProjectToolStripMenuItem");
+            showEditorsWhenLoadingProjectToolStripMenuItem.Click += new System.EventHandler(showEditorsWhenLoadingProjectToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -833,6 +842,8 @@ namespace IndustrialPark
             ResumeLayout(false);
             PerformLayout();
         }
+
+        private System.Windows.Forms.ToolStripMenuItem showEditorsWhenLoadingProjectToolStripMenuItem;
 
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelNumSelected;

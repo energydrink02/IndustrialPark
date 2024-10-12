@@ -172,6 +172,9 @@ namespace IndustrialPark
             BuildISO.PCSX2Path = settings.pcsx2Path;
             BuildISO.recentGameDirPaths = settings.recentBuildIsoGamePaths;
             
+            bool showEditorsWhenLoadingProject = settings.showEditorsWhenLoadingProject;
+            showEditorsWhenLoadingProjectToolStripMenuItem.Checked = showEditorsWhenLoadingProject;
+            
             setFlyCursor(settings.flyModeCursor);
             TranslucentWhenOutOfFocus = settings.translucentEditor;
             translucentFocusToolStripMenuItem.Checked = TranslucentWhenOutOfFocus;
@@ -203,7 +206,7 @@ namespace IndustrialPark
             }
 
             if (settings.AutoloadOnStartup && !string.IsNullOrEmpty(settings.LastProjectPath) && File.Exists(settings.LastProjectPath))
-                ApplyProject(settings.LastProjectPath);
+                ApplyProject(settings.LastProjectPath, showEditorsWhenLoadingProject);
         }
 
         private delegate void StartLoop(Panel renderPanel);
@@ -252,6 +255,7 @@ namespace IndustrialPark
                 recentArchivePaths = openLastToolStripMenuItem.DropDownItems.Cast<ToolStripMenuItem>().Select(x => x.Text).ToArray(),
                 flyModeCursor = (int)flyModeCursor,
                 translucentEditor = TranslucentWhenOutOfFocus,
+                showEditorsWhenLoadingProject = showEditorsWhenLoadingProjectToolStripMenuItem.Checked
             };
 
             File.WriteAllText(pathToSettings, JsonConvert.SerializeObject(settings, Formatting.Indented));
@@ -321,7 +325,7 @@ namespace IndustrialPark
             { Filter = "JSON files|*.json" };
 
             if (openFile.ShowDialog() == DialogResult.OK)
-                ApplyProject(openFile.FileName);
+                ApplyProject(openFile.FileName, showEditorsWhenLoadingProjectToolStripMenuItem.Checked);
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -445,14 +449,14 @@ namespace IndustrialPark
             };
         }
 
-        private void ApplyProject(string projectPath)
+        private void ApplyProject(string projectPath, bool showEditors = true)
         {
             currentProjectPath = projectPath;
             SetProjectToolStripStatusLabel();
-            ApplyProject(JsonConvert.DeserializeObject<ProjectJson>(File.ReadAllText(projectPath)));
+            ApplyProject(JsonConvert.DeserializeObject<ProjectJson>(File.ReadAllText(projectPath)), showEditors);
         }
 
-        private void ApplyProject(ProjectJson ipSettings)
+        private void ApplyProject(ProjectJson ipSettings, bool showEditors = true)
         {
             if (ipSettings.version != ProjectJson.getCurrentVersion)
                 MessageBox.Show("You are trying to open a project file made with a different version of Industrial Park. The program will attempt to load the project, but there is a chance it will not load properly.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -474,10 +478,13 @@ namespace IndustrialPark
                 else
                 {
                     if (File.Exists(ipSettings.hipPaths[i]))
-                        AddArchiveEditor(ipSettings.hipPaths[i], ipSettings.scoobyPlatforms[i]);
+                        AddArchiveEditor(ipSettings.hipPaths[i], ipSettings.scoobyPlatforms[i], showEditors);
                     else
                     {
-                        MessageBox.Show("Error opening " + ipSettings.hipPaths[i] + ": file not found");
+                        MessageBox.Show("Error opening " + ipSettings.hipPaths[i] + ": file not found", 
+                            "File not Found",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
                     }
                 }
 
@@ -811,11 +818,10 @@ namespace IndustrialPark
             archiveEditors.Last().Show();
         }
 
-        public void AddArchiveEditor(string filePath = null, Platform scoobyPlatform = Platform.Unknown)
+        public void AddArchiveEditor(string filePath = null, Platform scoobyPlatform = Platform.Unknown, bool show = true)
         {
             ArchiveEditor ae = new ArchiveEditor();
-            ae.Show();
-            ae.Hide();
+            
             ae.Begin(filePath, scoobyPlatform);
             archiveEditors.Add(ae);
 
@@ -833,6 +839,9 @@ namespace IndustrialPark
             UpdateTitleBar();
             SetupAssetVisibilityButtons();
             closeAllEditorsToolStripMenuItem.Enabled = true;
+            
+            if (show)
+                ae.Show();
         }
 
         public void EditorUpdate()
@@ -2047,6 +2056,11 @@ namespace IndustrialPark
                 foreach (ArchiveEditor ae in archiveEditors)
                     if (!ae.Focused)
                         ae.Opacity = 0.5f;
+        }
+
+        private void showEditorsWhenLoadingProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showEditorsWhenLoadingProjectToolStripMenuItem.Checked = !showEditorsWhenLoadingProjectToolStripMenuItem.Checked;
         }
     }
 }
