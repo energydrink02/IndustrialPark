@@ -67,7 +67,6 @@ namespace IndustrialPark
                 File.WriteAllText(txdGenFolder + "txdgen.ini", ini);
 
                 txdgenProcess.Start();
-                Task.Factory.StartNew(() => { Thread.Sleep(5000); closeConverter(); });
                 txdgenProcess.WaitForExit(5000);
             }
         }
