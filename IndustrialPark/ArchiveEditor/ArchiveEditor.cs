@@ -512,6 +512,7 @@ namespace IndustrialPark
                 comboBoxAssetTypes.Items.Clear();
                 listViewAssets.Items.Clear();
             }
+            PopulateAssetList();
             SetMenuItemsEnabled();
             SetupAssetVisibilityButtons();
         }
@@ -745,7 +746,7 @@ namespace IndustrialPark
                 bool piptVcolors, 
                 bool solidSimps, 
                 bool jsp, 
-                bool placeOnExistingDefaultLayer) = ImportModel.GetModels(archive.game, archive.NoLayers);
+                bool placeOnExistingDefaultLayer) = ImportModel.GetModels(archive.game, archive.platform, archive.NoLayers);
 
             if (AHDRs != null)
             {
