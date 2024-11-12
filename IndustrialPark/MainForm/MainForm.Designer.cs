@@ -47,7 +47,7 @@ namespace IndustrialPark
             toolStripSeparator5 = new ToolStripSeparator();
             autoSaveOnClosingToolStripMenuItem = new ToolStripMenuItem();
             autoLoadOnStartupToolStripMenuItem = new ToolStripMenuItem();
-            showEditorsWhenLoadingProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            showEditorsWhenLoadingProjectToolStripMenuItem = new ToolStripMenuItem();
             optionsToolStripMenuItem = new ToolStripMenuItem();
             viewConfigToolStripMenuItem = new ToolStripMenuItem();
             viewControlsToolStripMenuItem = new ToolStripMenuItem();
@@ -100,6 +100,7 @@ namespace IndustrialPark
             tRIGColorToolStripMenuItem = new ToolStripMenuItem();
             sFXInColorToolStripMenuItem = new ToolStripMenuItem();
             noCullingCToolStripMenuItem = new ToolStripMenuItem();
+            fogToolStripMenuItem = new ToolStripMenuItem();
             wireframeFToolStripMenuItem = new ToolStripMenuItem();
             vSyncToolStripMenuItem = new ToolStripMenuItem();
             lowerQualityGraphicsToolStripMenuItem = new ToolStripMenuItem();
@@ -109,6 +110,7 @@ namespace IndustrialPark
             toolStripSeparator9 = new ToolStripSeparator();
             drawOnlyFirstMINFReferenceToolStripMenuItem = new ToolStripMenuItem();
             showVertexColorsToolStripMenuItem = new ToolStripMenuItem();
+            useLightKitsForRenderingToolStripMenuItem = new ToolStripMenuItem();
             useLODTForRenderingToolStripMenuItem = new ToolStripMenuItem();
             usePIPTForRenderingToolStripMenuItem = new ToolStripMenuItem();
             hideInvisibleMeshesToolStripMenuItem = new ToolStripMenuItem();
@@ -241,10 +243,10 @@ namespace IndustrialPark
             // showEditorsWhenLoadingProjectToolStripMenuItem
             // 
             showEditorsWhenLoadingProjectToolStripMenuItem.Checked = true;
-            showEditorsWhenLoadingProjectToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            showEditorsWhenLoadingProjectToolStripMenuItem.CheckState = CheckState.Checked;
             showEditorsWhenLoadingProjectToolStripMenuItem.Name = "showEditorsWhenLoadingProjectToolStripMenuItem";
             resources.ApplyResources(showEditorsWhenLoadingProjectToolStripMenuItem, "showEditorsWhenLoadingProjectToolStripMenuItem");
-            showEditorsWhenLoadingProjectToolStripMenuItem.Click += new System.EventHandler(showEditorsWhenLoadingProjectToolStripMenuItem_Click);
+            showEditorsWhenLoadingProjectToolStripMenuItem.Click += showEditorsWhenLoadingProjectToolStripMenuItem_Click;
             // 
             // optionsToolStripMenuItem
             // 
@@ -456,7 +458,7 @@ namespace IndustrialPark
             // 
             // displayToolStripMenuItem
             // 
-            displayToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { assetTypesToolStripMenuItem, addTextureFolderToolStripMenuItem, addTXDArchiveToolStripMenuItem, refreshTexturesAndModelsToolStripMenuItem, toolStripSeparator10, colorsToolStripMenuItem, noCullingCToolStripMenuItem, wireframeFToolStripMenuItem, vSyncToolStripMenuItem, lowerQualityGraphicsToolStripMenuItem, toolStripSeparator6, uIModeToolStripMenuItem, uIModeAutoSizeToolStripMenuItem, toolStripSeparator9, drawOnlyFirstMINFReferenceToolStripMenuItem, showVertexColorsToolStripMenuItem, useLODTForRenderingToolStripMenuItem, usePIPTForRenderingToolStripMenuItem, hideInvisibleMeshesToolStripMenuItem, movementPreviewToolStripMenuItem });
+            displayToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { assetTypesToolStripMenuItem, addTextureFolderToolStripMenuItem, addTXDArchiveToolStripMenuItem, refreshTexturesAndModelsToolStripMenuItem, toolStripSeparator10, colorsToolStripMenuItem, noCullingCToolStripMenuItem, fogToolStripMenuItem, wireframeFToolStripMenuItem, vSyncToolStripMenuItem, lowerQualityGraphicsToolStripMenuItem, toolStripSeparator6, uIModeToolStripMenuItem, uIModeAutoSizeToolStripMenuItem, toolStripSeparator9, drawOnlyFirstMINFReferenceToolStripMenuItem, showVertexColorsToolStripMenuItem, useLightKitsForRenderingToolStripMenuItem, useLODTForRenderingToolStripMenuItem, usePIPTForRenderingToolStripMenuItem, hideInvisibleMeshesToolStripMenuItem, movementPreviewToolStripMenuItem });
             displayToolStripMenuItem.Name = "displayToolStripMenuItem";
             resources.ApplyResources(displayToolStripMenuItem, "displayToolStripMenuItem");
             // 
@@ -565,6 +567,15 @@ namespace IndustrialPark
             resources.ApplyResources(noCullingCToolStripMenuItem, "noCullingCToolStripMenuItem");
             noCullingCToolStripMenuItem.Click += noCullingCToolStripMenuItem_Click;
             // 
+            // fogToolStripMenuItem
+            // 
+            fogToolStripMenuItem.Checked = true;
+            fogToolStripMenuItem.CheckOnClick = true;
+            fogToolStripMenuItem.CheckState = CheckState.Checked;
+            fogToolStripMenuItem.Name = "fogToolStripMenuItem";
+            resources.ApplyResources(fogToolStripMenuItem, "fogToolStripMenuItem");
+            fogToolStripMenuItem.Click += fogToolStripMenuItem_Click;
+            // 
             // wireframeFToolStripMenuItem
             // 
             wireframeFToolStripMenuItem.Name = "wireframeFToolStripMenuItem";
@@ -616,10 +627,20 @@ namespace IndustrialPark
             // showVertexColorsToolStripMenuItem
             // 
             showVertexColorsToolStripMenuItem.Checked = true;
+            showVertexColorsToolStripMenuItem.CheckOnClick = true;
             showVertexColorsToolStripMenuItem.CheckState = CheckState.Checked;
             showVertexColorsToolStripMenuItem.Name = "showVertexColorsToolStripMenuItem";
             resources.ApplyResources(showVertexColorsToolStripMenuItem, "showVertexColorsToolStripMenuItem");
             showVertexColorsToolStripMenuItem.Click += showVertexColorsToolStripMenuItem_Click;
+            // 
+            // useLightKitsForRenderingToolStripMenuItem
+            // 
+            useLightKitsForRenderingToolStripMenuItem.Checked = true;
+            useLightKitsForRenderingToolStripMenuItem.CheckOnClick = true;
+            useLightKitsForRenderingToolStripMenuItem.CheckState = CheckState.Checked;
+            useLightKitsForRenderingToolStripMenuItem.Name = "useLightKitsForRenderingToolStripMenuItem";
+            resources.ApplyResources(useLightKitsForRenderingToolStripMenuItem, "useLightKitsForRenderingToolStripMenuItem");
+            useLightKitsForRenderingToolStripMenuItem.Click += useLightKitsForRenderingToolStripMenuItem_Click;
             // 
             // useLODTForRenderingToolStripMenuItem
             // 
@@ -959,6 +980,8 @@ namespace IndustrialPark
         private ToolStripMenuItem buildAndRunPS2ISOToolStripMenuItem;
         private ToolStripMenuItem openLastToolStripMenuItem;
         private ToolStripMenuItem translucentFocusToolStripMenuItem;
+        private ToolStripMenuItem fogToolStripMenuItem;
+        private ToolStripMenuItem useLightKitsForRenderingToolStripMenuItem;
     }
 }
 

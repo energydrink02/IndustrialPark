@@ -23,7 +23,7 @@ namespace IndustrialPark
             Crosshair = 1,
             Hide = 2
         }
-        
+
         public MainForm()
         {
             StartPosition = FormStartPosition.CenterScreen;
@@ -171,10 +171,10 @@ namespace IndustrialPark
 
             BuildISO.PCSX2Path = settings.pcsx2Path;
             BuildISO.recentGameDirPaths = settings.recentBuildIsoGamePaths;
-            
+
             bool showEditorsWhenLoadingProject = settings.showEditorsWhenLoadingProject;
             showEditorsWhenLoadingProjectToolStripMenuItem.Checked = showEditorsWhenLoadingProject;
-            
+
             setFlyCursor(settings.flyModeCursor);
             TranslucentWhenOutOfFocus = settings.translucentEditor;
             translucentFocusToolStripMenuItem.Checked = TranslucentWhenOutOfFocus;
@@ -437,7 +437,7 @@ namespace IndustrialPark
                 FarPlane = renderer.Camera.FarPlane,
                 NoCulling = noCullingCToolStripMenuItem.Checked,
                 Wireframe = wireframeFToolStripMenuItem.Checked,
-                BackgroundColor = renderer.backgroundColor,
+                BackgroundColor = SharpRenderer.backgroundColor,
                 WidgetColor = renderer.normalColor,
                 TrigColor = renderer.trigColor,
                 MvptColor = renderer.mvptColor,
@@ -446,6 +446,9 @@ namespace IndustrialPark
                 isDrawingUI = renderer.isDrawingUI,
                 Grid = ArchiveEditorFunctions.Grid,
                 dontRender = dontRender,
+                FogRender = !AssetFOG.DontRender,
+                LightKitRender = !AssetLKIT.DontRender,
+                VertexColorRender = SharpRenderer.RenderVertexColors,
             };
         }
 
@@ -481,7 +484,7 @@ namespace IndustrialPark
                         AddArchiveEditor(ipSettings.hipPaths[i], ipSettings.scoobyPlatforms[i], showEditors);
                     else
                     {
-                        MessageBox.Show("Error opening " + ipSettings.hipPaths[i] + ": file not found", 
+                        MessageBox.Show("Error opening " + ipSettings.hipPaths[i] + ": file not found",
                             "File not Found",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
@@ -511,7 +514,7 @@ namespace IndustrialPark
             else
                 renderer.device.SetNormalFillMode(FillMode.Solid);
 
-            renderer.backgroundColor = ipSettings.BackgroundColor;
+            SharpRenderer.backgroundColor = ipSettings.BackgroundColor;
             renderer.SetWidgetColor(ipSettings.WidgetColor);
             renderer.SetMvptColor(ipSettings.MvptColor);
             renderer.SetTrigColor(ipSettings.TrigColor);
@@ -529,6 +532,14 @@ namespace IndustrialPark
                     assetViewToolStripMenuItems[i].Checked = !value;
                     assetViewTypes[type].GetField("dontRender").SetValue(null, value);
                 }
+
+            
+            fogToolStripMenuItem.Checked = ipSettings.FogRender;
+            AssetFOG.DontRender = !ipSettings.FogRender;
+            showVertexColorsToolStripMenuItem.Checked = ipSettings.VertexColorRender;
+            SharpRenderer.RenderVertexColors = ipSettings.VertexColorRender;
+            useLightKitsForRenderingToolStripMenuItem.Checked = ipSettings.LightKitRender;
+            AssetLKIT.DontRender = !ipSettings.LightKitRender;
         }
 
         public void SetToolStripStatusLabel(string Text)
@@ -567,7 +578,7 @@ namespace IndustrialPark
             {
                 if (mouseMode)
                 {
-                    
+
 
                     switch (flyModeCursor)
                     {
@@ -587,7 +598,7 @@ namespace IndustrialPark
                             }
                             break;
                     }
-                    
+
                     renderer.Camera.AddYaw(MathUtil.DegreesToRadians(Cursor.Position.X - MouseCenter.X) / 4);
                     renderer.Camera.AddPitch(MathUtil.DegreesToRadians(Cursor.Position.Y - MouseCenter.Y) / 4);
 
@@ -600,10 +611,10 @@ namespace IndustrialPark
                         cursorHidden = false;
                         Cursor.Show();
                     }
-                    
+
                     if (Cursor.Current != Cursors.Default)
                         Cursor = Cursors.Default;
-                    
+
                     if (e.Button == MouseButtons.Middle)
                     {
                         renderer.Camera.AddYaw(MathUtil.DegreesToRadians(e.X - oldMousePosition.X));
@@ -666,15 +677,17 @@ namespace IndustrialPark
             else if (e.KeyCode == Keys.C)
                 ToggleBackfaceCulling();
             else if (e.KeyCode == Keys.F)
-                ToggleWireFrame();
+                fogToolStripMenuItem.PerformClick();
             else if (e.KeyCode == Keys.H)
                 DropSelectedAssets();
             else if (e.KeyCode == Keys.G)
                 OpenInternalEditors();
+            else if (e.KeyCode == Keys.L)
+                useLightKitsForRenderingToolStripMenuItem.PerformClick();
             else if (e.KeyCode == Keys.V)
                 ToggleGizmoType();
             else if (e.KeyCode == Keys.P)
-                showVertexColorsToolStripMenuItem_Click(null, null);
+                showVertexColorsToolStripMenuItem.PerformClick();
             else if (e.KeyCode == Keys.Delete)
                 DeleteSelectedAssets();
             else if (e.KeyCode == Keys.U)
@@ -694,6 +707,9 @@ namespace IndustrialPark
                 buildAndRunPS2ISOToolStripMenuItem_Click(sender, e);
             else if (e.KeyCode == Keys.F7)
                 createGameCubeBannerToolStripMenuItem_Click(sender, e);
+
+            if (PressedKeys.Contains(Keys.ControlKey) && PressedKeys.Contains(Keys.F))
+                ToggleWireFrame();
 
             if (PressedKeys.Contains(Keys.S)
                 && PressedKeys.Contains(Keys.ControlKey)
@@ -821,7 +837,7 @@ namespace IndustrialPark
         public void AddArchiveEditor(string filePath = null, Platform scoobyPlatform = Platform.Unknown, bool show = true)
         {
             ArchiveEditor ae = new ArchiveEditor();
-            
+
             ae.Begin(filePath, scoobyPlatform);
             archiveEditors.Add(ae);
 
@@ -839,9 +855,9 @@ namespace IndustrialPark
             UpdateTitleBar();
             SetupAssetVisibilityButtons();
             closeAllEditorsToolStripMenuItem.Enabled = true;
-            
+
             ae.Show();
-            
+
             // Cannot select assets if the editor isn't shown first?
             if (!show)
                 ae.Hide();
@@ -935,10 +951,10 @@ namespace IndustrialPark
         {
             ColorDialog colorDialog = new ColorDialog
             {
-                Color = System.Drawing.Color.FromArgb(BitConverter.ToInt32(BitConverter.GetBytes(renderer.backgroundColor.ToBgra()).Reverse().ToArray(), 0))
+                Color = System.Drawing.Color.FromArgb(BitConverter.ToInt32(BitConverter.GetBytes(SharpRenderer.backgroundColor.ToBgra()).Reverse().ToArray(), 0))
             };
             if (colorDialog.ShowDialog() == DialogResult.OK)
-                renderer.backgroundColor = new SharpDX.Color(colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B, colorDialog.Color.A);
+                SharpRenderer.backgroundColor = new SharpDX.Color(colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B, colorDialog.Color.A);
         }
 
         private void widgetColorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1002,9 +1018,11 @@ namespace IndustrialPark
                 "1, 3: decrease rotation interval, increase rotation interval (view rotation speed)\n" +
                 "B and N: select previous/next template\n" +
                 "C: toggles backface culling\n" +
-                "F: toggles wireframe mode\n" +
+                "Ctrl + F: toggles wireframe mode\n" +
+                "F: Toogle fog\n" +
                 "G: open Asset Data Editor for selected assets\n" +
                 "H: drop selected assets\n" +
+                "L: use light kits for rendering\n" +
                 "P: Toggle vertex color display\n" +
                 "R: reset view\n" +
                 "T: snap gizmos to grid\n" +
@@ -1493,11 +1511,11 @@ namespace IndustrialPark
         private void ensureAssociationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DialogResult.OK == MessageBox.Show(
-                    "Will set Industrial Park as default application for HIP, HOP and BNR (GameCube banner) file formats on registry.", 
-                    "Associate HIP/HOP files",  
+                    "Will set Industrial Park as default application for HIP, HOP and BNR (GameCube banner) file formats on registry.",
+                    "Associate HIP/HOP files",
                     MessageBoxButtons.OKCancel,
                     MessageBoxIcon.Information))
-                
+
                 FileAssociations.FileAssociations.EnsureAssociationsSet();
         }
 
@@ -2006,8 +2024,7 @@ namespace IndustrialPark
 
         private void showVertexColorsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            showVertexColorsToolStripMenuItem.Checked = !showVertexColorsToolStripMenuItem.Checked;
-            renderer.ToggleVertexColors(showVertexColorsToolStripMenuItem.Checked);
+            SharpRenderer.RenderVertexColors = showVertexColorsToolStripMenuItem.Checked;
         }
 
         private void buildAndRunPS2ISOToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2043,7 +2060,7 @@ namespace IndustrialPark
         private void setFlyCursor(int flyModeCursor)
         {
             this.flyModeCursor = (FlyModeCursor)flyModeCursor;
-            
+
             // Updaate the toolstrip dropdown items
             foreach (ToolStripMenuItem item in cursorInFlyModeToolStripMenuItem.DropDownItems)
                 item.Checked = Convert.ToInt32(item.Tag) == flyModeCursor;
@@ -2064,6 +2081,16 @@ namespace IndustrialPark
         private void showEditorsWhenLoadingProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             showEditorsWhenLoadingProjectToolStripMenuItem.Checked = !showEditorsWhenLoadingProjectToolStripMenuItem.Checked;
+        }
+
+        private void fogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AssetFOG.DontRender = !fogToolStripMenuItem.Checked;
+        }
+
+        private void useLightKitsForRenderingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AssetLKIT.DontRender = !useLightKitsForRenderingToolStripMenuItem.Checked;
         }
     }
 }

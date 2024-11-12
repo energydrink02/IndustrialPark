@@ -1,6 +1,9 @@
 ﻿using HipHopFile;
 using IndustrialPark.AssetEditorColors;
+using System;
 using System.ComponentModel;
+using System.Numerics;
+using System.Security.Policy;
 
 namespace IndustrialPark
 {
@@ -42,6 +45,16 @@ namespace IndustrialPark
         public AssetSingle Radius { get; set; }
         public AssetSingle Angle { get; set; }
         public AssetSingle PlatLight { get; set; }
+        public SharpDX.Vector3 DirectionVector
+        {
+            get => new SharpDX.Vector3(Direction_X, Direction_Y, Direction_Z);
+            set
+            {
+                Direction_X = value.X;
+                Direction_Y = value.Y;
+                Direction_Z = value.Z;
+            }
+        }
 
         public LightKitLight() { }
         public LightKitLight(EndianBinaryReader reader)
@@ -113,6 +126,12 @@ namespace IndustrialPark
         [Category(categoryName)]
         public int Blended { get; set; }
 
+        public const int MAX_DIRECTIONAL_LIGHTS = 8;
+        [Browsable(false)]
+        public static bool DontRender = false;
+        [Browsable(false)]
+        public static AssetLKIT SceneLightKit = null;
+
         public AssetLKIT(string assetName, byte[] data, Endianness endianness) : base(assetName, AssetType.LightKit)
         {
             Read(data, endianness);
@@ -130,13 +149,13 @@ namespace IndustrialPark
                 reader.BaseStream.Position = 0x04;
                 Group = reader.ReadUInt32();
                 int lightCount = reader.ReadInt32();
-                Lights = new LightKitLight[lightCount];
-
-                reader.BaseStream.Position = 0x10;
-                for (int i = 0; i < lightCount; i++)
-                    Lights[i] = new LightKitLight(reader);
+                reader.ReadInt32();
                 if (game >= Game.ROTU)
                     Blended = reader.ReadInt32();
+                Lights = new LightKitLight[lightCount];
+
+                for (int i = 0; i < lightCount; i++)
+                    Lights[i] = new LightKitLight(reader);
             }
         }
 
@@ -150,12 +169,11 @@ namespace IndustrialPark
             writer.Write(Group);
             writer.Write(Lights.Length);
             writer.Write(0);
+            if (game >= Game.ROTU)
+                writer.Write(Blended);
 
             foreach (var l in Lights)
                 l.Serialize(writer);
-
-            if (game >= Game.ROTU)
-                writer.Write(Blended);
         }
 
         public override void SetDynamicProperties(DynamicTypeDescriptor dt)
