@@ -677,6 +677,8 @@ namespace IndustrialPark
                 renderer.Camera.IncreaseCameraRotationSpeed(1);
             else if (e.KeyCode == Keys.C)
                 ToggleBackfaceCulling();
+            else if (PressedKeys.Contains(Keys.ControlKey) && PressedKeys.Contains(Keys.F))
+                ToggleWireFrame();
             else if (e.KeyCode == Keys.F)
                 fogToolStripMenuItem.PerformClick();
             else if (e.KeyCode == Keys.H)
@@ -709,8 +711,6 @@ namespace IndustrialPark
             else if (e.KeyCode == Keys.F7)
                 createGameCubeBannerToolStripMenuItem_Click(sender, e);
 
-            if (PressedKeys.Contains(Keys.ControlKey) && PressedKeys.Contains(Keys.F))
-                ToggleWireFrame();
 
             if (PressedKeys.Contains(Keys.S)
                 && PressedKeys.Contains(Keys.ControlKey)
