@@ -461,8 +461,6 @@ namespace IndustrialPark
 
         public void UpdateDictionary()
         {
-            ClearDictionary();
-
             Dictionary<uint, PipeInfo[]> piptEntries = new Dictionary<uint, PipeInfo[]>();
 
             foreach (PipeInfo entry in Entries)
