@@ -1385,8 +1385,7 @@ namespace IndustrialPark
             {
                 var asset = (AssetGRUP)archive.GetFromAssetID(assetIDs[0]);
                 asset.AddItems(ids);
-                AddToAssetList(new List<uint> { asset.assetID });
-                SetSelectedIndex(asset.assetID, true);
+                UpdateCurrentListView(asset);
             }
         }
 
