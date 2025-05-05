@@ -1,5 +1,6 @@
 ﻿using HipHopFile;
 using System.ComponentModel;
+using System.Drawing.Design;
 
 namespace IndustrialPark
 {
@@ -101,6 +102,7 @@ namespace IndustrialPark
         [Category(categoryName)]
         public byte TargetPriority { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public DestState[] States { get; set; }
 
         public AssetDEST(string assetName) : base(assetName, AssetType.Destructible)

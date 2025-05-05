@@ -2,6 +2,7 @@
 using IndustrialPark.AssetEditorColors;
 using System;
 using System.ComponentModel;
+using System.Drawing.Design;
 
 namespace IndustrialPark
 {
@@ -69,6 +70,7 @@ namespace IndustrialPark
 
         private UIBoxPart[] _parts { get; set; }
         [Category(dynaCategoryName), Description("UI Box must have exactly 9 parts")]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public UIBoxPart[] parts
         {
             get => _parts;

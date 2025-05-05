@@ -2,6 +2,7 @@
 using SharpDX;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 
 namespace IndustrialPark
 {
@@ -91,10 +92,13 @@ namespace IndustrialPark
         [Category(categoryName)]
         public AssetID Unknown3 { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public WireVector[] Vertices { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public DashTrackTriangle[] Triangles { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public DashTrackPortal[] Portals { get; set; }
         [Category(categoryName)]
         public uint LastTriangle { get; set; }

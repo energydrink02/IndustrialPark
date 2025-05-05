@@ -1,6 +1,8 @@
 ﻿using HipHopFile;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,6 +62,7 @@ namespace IndustrialPark
         public AssetSingle mTransitionTime { get; set; }
         public AssetID mCurveID { get; set; }
         public AssetID mCurveID2 { get; set; }
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public CameraCurveBear[] CurveBeads { get; set; }
 
         public AssetCCRV(string assetName) : base(assetName, AssetType.CameraCurve, BaseAssetType.CameraCurve)

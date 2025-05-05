@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 
 namespace IndustrialPark
@@ -105,6 +106,7 @@ namespace IndustrialPark
         [Category(categoryName)]
         private StructPARP[] _structs { get; set; }
         [Category(categoryName), Description("Each of the 14 structs has a different function. Check wiki page for more info.")]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public StructPARP[] Structs
         {
             get => _structs;

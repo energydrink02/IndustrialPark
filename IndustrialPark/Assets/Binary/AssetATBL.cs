@@ -213,6 +213,7 @@ namespace IndustrialPark
         public int FileFlags { get; set; }
         public AssetSingle Duration { get; set; }
         public AssetSingle TimeOffset { get; set; }
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public int[][] RawData { get; set; }
         public int Physics { get; set; }
         public int StartPose { get; set; }
@@ -221,7 +222,7 @@ namespace IndustrialPark
         public AnimationFile()
         {
             RawData = new int[1][];
-            RawData[1] = new int[1];
+            RawData[0] = new int[1];
         }
 
         public AnimationFile(EndianBinaryReader reader)
@@ -289,22 +290,13 @@ namespace IndustrialPark
         }
         public int SubStateCount { get; set; }
 
-        private AnimationEffect[] _animationeffects;
         [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
-        public AnimationEffect[] AnimationEffects
-        {
-            get
-            {
-                DynamicTypeDescriptorCollectionEditor.game = game;
-                return _animationeffects;
-            }
-            set => _animationeffects = value;
-        }
+        public AnimationEffect[] AnimationEffects { get; set; }
 
         public AnimationState(Game game)
         {
             _game = game;
-            _animationeffects = new AnimationEffect[0];
+            AnimationEffects = new AnimationEffect[0];
         }
 
         public AnimationState(EndianBinaryReader reader, Game game) : this(game)
@@ -380,6 +372,7 @@ namespace IndustrialPark
         public int EffectType_BFBB { get; set; }
         public AssetByte EffectType_TSSM { get; set; }
         public AssetByte Probability { get; set; }
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public byte[] UserDataBytes { get; set; }
 
         public override void SetDynamicProperties(DynamicTypeDescriptor dt)
@@ -484,21 +477,13 @@ namespace IndustrialPark
         [Category(categoryName)]
         public AssetID ConstructFunc_Hash { get; set; }
         [Category(categoryName), ValidReferenceRequired]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public AssetID[] Animations { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public AnimationFile[] AnimationFiles { get; set; }
-
-        private AnimationState[] _animationstate;
         [Category(categoryName), Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
-        public AnimationState[] AnimationStates
-        {
-            get
-            {
-                DynamicTypeDescriptorCollectionEditor.game = game;
-                return _animationstate;
-            }
-            set => _animationstate = value;
-        }
+        public AnimationState[] AnimationStates { get; set; }
 
         public AssetATBL(Section_AHDR AHDR, Game game, Endianness endianness) : base(AHDR, game)
         {

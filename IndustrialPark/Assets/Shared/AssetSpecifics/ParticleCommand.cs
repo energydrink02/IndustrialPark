@@ -59,9 +59,13 @@ namespace IndustrialPark
         [Category(categoryName), Browsable(false)]
         public short Pad { get; set; }
 
-        public ParticleCommand(ParticleCommandType commandType)
+        public ParticleCommand()
         {
             Enabled = true;
+        }
+
+        public ParticleCommand(ParticleCommandType commandType) : this()
+        {
             CommandType = commandType;
         }
 

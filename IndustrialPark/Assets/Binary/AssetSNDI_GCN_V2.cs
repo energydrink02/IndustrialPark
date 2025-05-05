@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 
 namespace IndustrialPark
@@ -16,9 +17,11 @@ namespace IndustrialPark
         public FSB3_File Entry_Sounds { get; set; }
 
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public FSB3_File[] Entries_StreamingSounds { get; set; }
 
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public EntrySoundInfo_GCN_V1[] Entries_Sound_CIN { get; set; }
 
         public AssetSNDI_GCN_V2(string assetName) : base(assetName, AssetType.SoundInfo)

@@ -2,6 +2,7 @@
 using HipHopFile;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 
 namespace IndustrialPark
@@ -59,10 +60,13 @@ namespace IndustrialPark
         [Category(categoryName)]
         public AssetSingle ScaleZ { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public AssetANIM_KeyFrame[] KeyFrames { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public AssetSingle[] Times { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public short[][] Offsets { get; set; }
 
         public AssetANIM_V1()

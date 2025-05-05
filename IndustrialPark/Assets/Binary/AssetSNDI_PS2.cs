@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Linq;
 using System.Text;
 
@@ -11,7 +12,7 @@ namespace IndustrialPark
 {
     public class EntrySoundInfo_PS2 : GenericAssetDataContainer
     {
-        public byte[] magic;
+        public byte[] magic = new byte[4] { (byte)'V', (byte)'A', (byte)'G', (byte)'p' };
         public uint Version { get; set; }
         public AssetID SoundAssetID { get; set; }
         public uint DataSize { get; set; }
@@ -19,7 +20,7 @@ namespace IndustrialPark
         public uint StreamInterleaveSize { get; set; }
         public uint StreamInterleaveCount { get; set; }
         public uint reserved2 { get; set; }
-        public string TrackName { get; set; }
+        public string TrackName { get; set; } = "";
 
         public static int StructSize = 0x30;
 
@@ -80,8 +81,10 @@ namespace IndustrialPark
         private const string categoryName = "Sound Info: PS2";
 
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public EntrySoundInfo_PS2[] Entries_SND { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public EntrySoundInfo_PS2[] Entries_SNDS { get; set; }
 
         [Category(categoryName)]

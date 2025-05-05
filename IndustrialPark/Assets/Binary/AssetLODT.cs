@@ -89,11 +89,7 @@ namespace IndustrialPark
         [Category("Level Of Detail Table"), Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public EntryLODT[] Entries
         {
-            get
-            {
-                DynamicTypeDescriptorCollectionEditor.game = game;
-                return _entries;
-            }
+            get => _entries;
             set
             {
                 _entries = value;

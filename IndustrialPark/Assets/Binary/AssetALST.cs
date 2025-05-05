@@ -1,6 +1,7 @@
 ﻿using HipHopFile;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 
 namespace IndustrialPark
@@ -8,6 +9,7 @@ namespace IndustrialPark
     public class AssetALST : Asset, IAssetAddSelected
     {
         [Category("Animation List")]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public AssetID[] Animations { get; set; }
 
         public AssetALST(string assetName) : base(assetName, AssetType.AnimationList)

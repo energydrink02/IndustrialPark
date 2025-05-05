@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,7 @@ namespace IndustrialPark
         public ezTaskAvailability InitialAvailability { get; set; }
         private AssetID[] _requiredTask;
         [Category(dynaCategoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public AssetID[] RequiredTask
         {
             get => _requiredTask;

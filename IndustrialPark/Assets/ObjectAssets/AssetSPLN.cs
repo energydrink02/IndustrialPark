@@ -3,6 +3,7 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using System;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 
 namespace IndustrialPark
@@ -63,6 +64,7 @@ namespace IndustrialPark
         public AssetID UnknownHash_18 { get; set; }
         private SplineVector[] _points;
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public SplineVector[] Points
         {
             get => _points;
@@ -74,6 +76,7 @@ namespace IndustrialPark
         }
         private AssetSingle[] _points2;
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public AssetSingle[] Points2
         {
             get => _points2;

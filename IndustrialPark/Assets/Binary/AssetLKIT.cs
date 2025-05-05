@@ -2,6 +2,7 @@
 using IndustrialPark.AssetEditorColors;
 using System;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Numerics;
 using System.Security.Policy;
 
@@ -122,6 +123,7 @@ namespace IndustrialPark
         [Category(categoryName)]
         public AssetID Group { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public LightKitLight[] Lights { get; set; }
         [Category(categoryName)]
         public int Blended { get; set; }

@@ -1,5 +1,6 @@
 ﻿using HipHopFile;
 using IndustrialPark.AssetEditorColors;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Design;
@@ -16,87 +17,116 @@ namespace IndustrialPark
     }
 
     [TypeConverter(typeof(ExpandableObjectConverter))]
-    public class CreditsTextBox : GenericAssetDataContainer
+    public class CreditsTextBox_Texture : GenericAssetDataContainer
     {
-        public FontEnum Font { get; set; }
-        public AssetColor Color { get; set; }
-        public AssetSingle CharWidth { get; set; }
-        public AssetSingle CharHeight { get; set; }
-        public AssetSingle CharSpacingX { get; set; }
-        public AssetSingle CharSpacingY { get; set; }
-        public AssetSingle MaxScreenWidth { get; set; }
-        public AssetSingle MaxScreenHeight { get; set; }
+        private uint _00h;
+        private float _08h;
+        private float _0Ch;
+        private float _10h;
+        private float _14h;
+        private uint _18h;
+        private uint _1Ch;
 
-        public CreditsTextBox()
+        [Category("TextBox")]
+        public FontEnum Font
+        {
+            get => (FontEnum)_00h;
+            set => _00h = (uint)value;
+        }
+
+        public AssetColor Color { get; set; }
+
+        [Category("TextBox")]
+        public AssetSingle CharWidth { get => _08h; set => _08h = value; }
+
+        [Category("TextBox")]
+        public AssetSingle CharHeight { get => _0Ch; set => _0Ch = value; }
+
+        [Category("TextBox")]
+        public AssetSingle CharSpacingX { get => _10h; set => _10h = value; }
+
+        [Category("TextBox")]
+        public AssetSingle CharSpacingY { get => _14h; set => _14h = value; }
+
+        [Category("TextBox")]
+        public AssetSingle MaxScreenWidth
+        {
+            get => BitConverter.ToSingle(BitConverter.GetBytes(_18h));
+            set => _18h = BitConverter.ToUInt32(BitConverter.GetBytes(value));
+        }
+
+        [Category("TextBox")]
+        public AssetSingle MaxScreenHeight
+        {
+            get => BitConverter.ToSingle(BitConverter.GetBytes(_1Ch));
+            set => _1Ch = BitConverter.ToUInt32(BitConverter.GetBytes(value));
+        }
+
+
+        [Category("Texture")]
+        public AssetID TextureAssetID { get => _00h; set => _00h = value; }
+
+        [Category("Texture")]
+        public AssetSingle PositionX { get => _08h; set => _08h = value; }
+
+        [Category("Texture")]
+        public AssetSingle PositionY { get => _0Ch; set => _0Ch = value; }
+
+        [Category("Texture")]
+        public AssetSingle Width { get => _10h; set => _10h = value; }
+
+        [Category("Texture")]
+        public AssetSingle Height { get => _14h; set => _14h = value; }
+
+        [Category("Texture")]
+        public uint Texture
+        {
+            get => BitConverter.ToUInt32(BitConverter.GetBytes(_18h));
+            set => _18h = BitConverter.ToUInt32(BitConverter.GetBytes(value));
+        }
+
+        [Category("Texture")]
+        public uint Pad
+        {
+            get => BitConverter.ToUInt32(BitConverter.GetBytes(_1Ch));
+            set => _1Ch = BitConverter.ToUInt32(BitConverter.GetBytes(value));
+        }
+
+        public CreditsTextBox_Texture()
         {
             Color = new AssetColor();
         }
-        public CreditsTextBox(EndianBinaryReader reader)
+
+        public CreditsTextBox_Texture(EndianBinaryReader reader)
         {
-            Font = (FontEnum)reader.ReadInt32();
+            _00h = reader.ReadUInt32();
             Color = new AssetColor(reader.ReadUInt32());
-            CharWidth = reader.ReadSingle();
-            CharHeight = reader.ReadSingle();
-            CharSpacingX = reader.ReadSingle();
-            CharSpacingY = reader.ReadSingle();
-            MaxScreenWidth = reader.ReadSingle();
-            MaxScreenHeight = reader.ReadSingle();
+            _08h = reader.ReadSingle();
+            _0Ch = reader.ReadSingle();
+            _10h = reader.ReadSingle();
+            _14h = reader.ReadSingle();
+            _18h = reader.ReadUInt32();
+            _1Ch = reader.ReadUInt32();
         }
 
         public override void Serialize(EndianBinaryWriter writer)
         {
-            writer.Write((int)Font);
+            writer.Write(_00h);
             writer.Write((uint)Color);
-            writer.Write(CharWidth);
-            writer.Write(CharHeight);
-            writer.Write(CharSpacingX);
-            writer.Write(CharSpacingY);
-            writer.Write(MaxScreenWidth);
-            writer.Write(MaxScreenHeight);
+            writer.Write(_08h);
+            writer.Write(_0Ch);
+            writer.Write(_10h);
+            writer.Write(_14h);
+            writer.Write(_18h);
+            writer.Write(_1Ch);
         }
+
     }
 
-    [TypeConverter(typeof(ExpandableObjectConverter))]
-    public class CreditsTexture : GenericAssetDataContainer
+    public enum PresetType
     {
-        public AssetID TextureAssetID { get; set; }
-        public AssetColor Color { get; set; }
-        public AssetSingle PositionX { get; set; }
-        public AssetSingle PositionY { get; set; }
-        public AssetSingle Width {  get; set; }
-        public AssetSingle Height { get; set; }
-        public uint Texture { get; set; }
-        public uint Pad { get; set; }
-
-        public CreditsTexture()
-        {
-            Color = new AssetColor();
-        }
-
-        public CreditsTexture(EndianBinaryReader reader)
-        {
-            TextureAssetID = reader.ReadUInt32();
-            Color = new AssetColor(reader.ReadUInt32());
-            PositionX = reader.ReadSingle();
-            PositionY = reader.ReadSingle();
-            Width = reader.ReadSingle();
-            Height = reader.ReadSingle();
-            Texture = reader.ReadUInt32();
-            Pad = reader.ReadUInt32();
-        }
-
-        public override void Serialize(EndianBinaryWriter writer)
-        {
-            writer.Write(TextureAssetID);
-            writer.Write((uint)Color);
-            writer.Write(PositionX);
-            writer.Write(PositionY);
-            writer.Write(Width);
-            writer.Write(Height);
-            writer.Write(Texture);
-            writer.Write(Pad);
-        }
-
+        Textbox = 0,
+        Texture = 4
     }
 
     public class CreditsPreset : GenericAssetDataContainer
@@ -105,94 +135,52 @@ namespace IndustrialPark
 
         [Category(categoryName)]
         public short Num { get; set; }
-        private short align;
-        [Category(categoryName)]
-        public CMAlignType Align
-        {
-            get => (CMAlignType)align;
-            set { align = (short)value; }
-        }
         [Category(categoryName)]
         public AssetSingle Delay { get; set; }
         [Category(categoryName)]
         public AssetSingle Innerspace { get; set; }
-        [Category("Textbox")]
-        public CreditsTextBox TextStyle { get; set; }
-        [Category("Textbox")]
-        public CreditsTextBox BackdropStyle { get; set; }
-        [Category("Texture")]
-        public CreditsTexture TextureFront { get; set; }
-        [Category("Texture")]
-        public CreditsTexture TextureBack { get; set; }
 
-        public CreditsPreset(int type)
+        [DisplayName("TextStyle/TextureFront")]
+        public CreditsTextBox_Texture TextStyle_TextureFront { get; set; }
+
+        [DisplayName("BackdropStyle/TextureBack")]
+        public CreditsTextBox_Texture BackdropStyle_TextureBack { get; set; }
+
+
+        public PresetType PresetType { get; set; }
+
+        public CreditsPreset()
         {
-            if (type == 4)
-            {
-                align = 4;
-            }
-            TextureFront = new CreditsTexture();
-            TextureBack = new CreditsTexture();
-            TextStyle = new CreditsTextBox();
-            BackdropStyle = new CreditsTextBox();
+            TextStyle_TextureFront = new CreditsTextBox_Texture();
+            BackdropStyle_TextureBack = new CreditsTextBox_Texture();
         }
 
         public CreditsPreset(EndianBinaryReader reader)
         {
             Num = reader.ReadInt16();
-            align = reader.ReadInt16();
+            PresetType = (PresetType)reader.ReadInt16();
             Delay = reader.ReadSingle();
             Innerspace = reader.ReadSingle();
 
-            if (align == 4)
-            {
-                TextureFront = new CreditsTexture(reader);
-                TextureBack = new CreditsTexture(reader);
-            }
-            else
-            {
-                TextStyle = new CreditsTextBox(reader);
-                BackdropStyle = new CreditsTextBox(reader);
-            }
+            TextStyle_TextureFront = new CreditsTextBox_Texture(reader);
+            BackdropStyle_TextureBack = new CreditsTextBox_Texture(reader);
         }
 
         public override void Serialize(EndianBinaryWriter writer)
         {
             writer.Write(Num);
-            writer.Write(align);
+            writer.Write((short)PresetType);
             writer.Write(Delay);
             writer.Write(Innerspace);
-            if (align == 4)
-            {
-                TextureFront.Serialize(writer);
-                TextureBack.Serialize(writer);
-            }
-            else
-            {
-                TextStyle.Serialize(writer);
-                BackdropStyle.Serialize(writer);
-            }
-        }
 
-        public override void SetDynamicProperties(DynamicTypeDescriptor dt)
-        {
-            if (align != 4)
-            {
-                dt.RemoveProperty("TextureFront");
-                dt.RemoveProperty("TextureBack");
-            }
-            else
-            {
-                dt.RemoveProperty("TextStyle");
-                dt.RemoveProperty("BackdropStyle");
-                dt.RemoveProperty("Align");
-            }
+            TextStyle_TextureFront.Serialize(writer);
+            BackdropStyle_TextureBack.Serialize(writer);
         }
 
         public override bool HasReference(uint assetID)
         {
-            if (align == 4)
-                return TextureFront.TextureAssetID == assetID || TextureBack.TextureAssetID == assetID;
+            if (PresetType == PresetType.Texture)
+                return TextStyle_TextureFront.TextureAssetID == assetID || BackdropStyle_TextureBack.TextureAssetID == assetID;
             return false;
         }
     }
@@ -288,36 +276,9 @@ namespace IndustrialPark
         public AssetSingle FadeOutEnd { get; set; }
         [Category("Preset"), Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public CreditsPreset[] Presets { get; set; }
-        [Category("Preset"), Editor(typeof(CrdtAddEditor), typeof(UITypeEditor))]
-        public string AddTextbox
-        {
-            get => "Click here ->";
-            set
-            {
-                if (value == "add_textbox_texture")
-                {
-                    var presets = Presets.ToList();
-                    presets.Add(new CreditsPreset(0));
-                    Presets = presets.ToArray();
-                }
 
-            }
-        }
-        [Category("Preset"), Editor(typeof(CrdtAddEditor), typeof(UITypeEditor))]
-        public string AddTexture
-        {
-            get => "Click here ->";
-            set
-            {
-                if (value == "add_textbox_texture")
-                {
-                    var presets = Presets.ToList();
-                    presets.Add(new CreditsPreset(4));
-                    Presets = presets.ToArray();
-                }
-            }
-        }
         [Category("Titles")]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public CreditsHunk[] Titles { get; set; }
 
         public CreditsEntry()
@@ -400,6 +361,8 @@ namespace IndustrialPark
         [Category(categoryName)]
         public AssetSingle TotalTime { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
+
         public CreditsEntry[] Sections { get; set; }
 
         public AssetCRDT(string assetName, Game game) : base(assetName, AssetType.Credits)

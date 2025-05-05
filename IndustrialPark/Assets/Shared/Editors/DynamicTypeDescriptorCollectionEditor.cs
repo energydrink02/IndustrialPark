@@ -1,6 +1,8 @@
 ﻿using HipHopFile;
 using Newtonsoft.Json;
+using SharpDX.Direct2D1;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
@@ -13,47 +15,97 @@ namespace IndustrialPark
 {
     public class DynamicTypeDescriptorCollectionEditor : CollectionEditor
     {
-        private string type;
-        public static Game game { get; set; }
+        private Game? _game;
+        private bool _isDynamicTypeDescriptor = false;
 
         public DynamicTypeDescriptorCollectionEditor(Type type) : base(type)
         {
-            this.type = type.Name;
+        }
+
+        protected override CollectionForm CreateCollectionForm()
+        {
+            CollectionForm form = base.CreateCollectionForm();
+            form.TopMost = true; // Fix winforms bug https://github.com/dotnet/winforms/issues/6190
+            form.Size += new Size(50, 50); // and make it a bigger too :)
+            return form;
         }
 
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
-            if (value is object[] array)
+            if (value == null && CollectionType != null)
             {
-                var newValue = new List<DynamicTypeDescriptor>();
-                foreach (var item in array)
+                try
                 {
-                    DynamicTypeDescriptor dt = new DynamicTypeDescriptor(item.GetType());
-                    if (item is GenericAssetDataContainer gadc)
-                        gadc.SetDynamicProperties(dt);
-                    newValue.Add(dt.FromComponent(item));
+                    if (CollectionType.IsArray)
+                        value = Array.CreateInstance(CollectionType.GetElementType(), 0);
+                    else
+                        value = Activator.CreateInstance(CollectionType);
                 }
-
-                var result = (List<DynamicTypeDescriptor>)base.EditValue(context, provider, newValue);
-
-                var newResult = new List<object>();
-                foreach (var dt in result)
-                    newResult.Add(dt.Component);
-
-                switch (type)
+                catch (Exception ex)
                 {
-                    case "Shrapnel[]":
-                        return newResult.Cast<Shrapnel>().ToArray();
-                    case "AnimationEffect[]":
-                        return newResult.Cast<AnimationEffect>().ToArray();
-                    case "AnimationState[]":
-                        return newResult.Cast<AnimationState>().ToArray();
-                    case "PipeInfo[]":
-                        return newResult.Cast<PipeInfo>().ToArray();
-                    case "EntryLODT[]":
-                        return newResult.Cast<EntryLODT>().ToArray();
-                    case "CreditsPreset[]":
-                        return newResult.Cast<CreditsPreset>().ToArray();
+                    throw new InvalidOperationException($"Cannot create an instance of {CollectionType.FullName}.", ex);
+                }
+            }
+
+
+            if (value is Array array)
+            {
+                if (CollectionType.GetElementType().IsClass && context?.Instance is DynamicTypeDescriptor dtd)
+                {
+                    _isDynamicTypeDescriptor = true;
+
+                    if (dtd.Component != null)
+                    {
+                        var gameProp = dtd.Component.GetType().GetProperty("game", BindingFlags.Instance | BindingFlags.Public);
+                        _game = (Game)gameProp.GetValue(dtd.Component);
+                    }
+
+                    var newValue = new List<DynamicTypeDescriptor>();
+                    foreach (var item in array)
+                    {
+                        DynamicTypeDescriptor dt = new DynamicTypeDescriptor(item.GetType());
+                        if (item is GenericAssetDataContainer gadc)
+                            gadc.SetDynamicProperties(dt);
+                        newValue.Add(dt.FromComponent(item));
+                    }
+
+                    var result = ((List<DynamicTypeDescriptor>)base.EditValue(context, provider, newValue)).Select(dt => dt.Component).ToList();
+
+                    Type singleType = CollectionType.GetElementType();
+                    if (singleType != null)
+                    {
+                        Array typedArray = Array.CreateInstance(singleType, result.Count);
+                        for (int i = 0; i < result.Count; i++)
+                        {
+                            //typedArray.SetValue(Convert.ChangeType(result[i], singleType), i);
+                            typedArray.SetValue(result[i], i);
+                        }
+                        return typedArray;
+                    }
+                }
+                else
+                {
+                    List<object> newValue = new(array.Length);
+                    foreach (var item in array)
+                        newValue.Add(item);
+
+                    var result = base.EditValue(context, provider, newValue);
+
+                    if (result is IList ilist)
+                    {
+                        Type singleType = CollectionType.GetElementType();
+                        if (singleType != null)
+                        {
+                            Array typedArray = Array.CreateInstance(singleType, ilist.Count);
+                            for (int i = 0; i < ilist.Count; i++)
+                            {
+                                if (!singleType.IsInstanceOfType(ilist[i]))
+                                    throw new InvalidCastException($"item at index {i} is not of expected type {singleType.FullName}");
+                                typedArray.SetValue(ilist[i], i);
+                            }
+                            return typedArray;
+                        }
+                    }
                 }
             }
 
@@ -63,18 +115,27 @@ namespace IndustrialPark
         protected override object CreateInstance(Type itemType)
         {
             Type type = CollectionType.GetElementType();
-            ConstructorInfo constructor = type.GetConstructor(new[] { typeof(Game) });
+            ConstructorInfo constructor = type?.GetConstructor([typeof(Game)]);
+
+            object instance;
 
             if (constructor != null)
-            {
-                object instance = constructor.Invoke(new object[] { game });
+                instance = constructor.Invoke(new object[] { _game });
+            else
+                instance = Activator.CreateInstance(type ?? itemType) ?? throw new InvalidOperationException("Cannot create instance of the specified type.");
 
-                DynamicTypeDescriptor dt = new DynamicTypeDescriptor(type);
-                if (instance is GenericAssetDataContainer gadc)
-                    gadc.SetDynamicProperties(dt);
-                return dt.FromComponent(instance);
-            }
-            return base.CreateInstance(itemType);
+            if (!_isDynamicTypeDescriptor)
+                return instance;
+
+            DynamicTypeDescriptor dt = new DynamicTypeDescriptor(type);
+            if (instance is GenericAssetDataContainer gadc)
+                gadc.SetDynamicProperties(dt);
+            return dt.FromComponent(instance);
+        }
+
+        protected override Type CreateCollectionItemType()
+        {
+            return CollectionType.GetElementType();
         }
     }
 }

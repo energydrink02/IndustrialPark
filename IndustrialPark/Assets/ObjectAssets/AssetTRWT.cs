@@ -1,5 +1,6 @@
 ﻿using HipHopFile;
 using System.ComponentModel;
+using System.Drawing.Design;
 
 namespace IndustrialPark
 {
@@ -59,6 +60,7 @@ namespace IndustrialPark
         [Category(categoryName)]
         public int Version { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public ThrowableEntry[] Entries { get; set; }
 
         public AssetTRWT(string assetName) : base(assetName, AssetType.ThrowableTable, BaseAssetType.Unknown_Other)

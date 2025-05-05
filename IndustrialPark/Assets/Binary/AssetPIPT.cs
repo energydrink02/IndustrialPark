@@ -413,11 +413,7 @@ namespace IndustrialPark
         [Category("Pipe Info Table"), Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public PipeInfo[] Entries
         {
-            get
-            {
-                DynamicTypeDescriptorCollectionEditor.game = game;
-                return _entries;
-            }
+            get => _entries;
             set
             {
                 _entries = value;

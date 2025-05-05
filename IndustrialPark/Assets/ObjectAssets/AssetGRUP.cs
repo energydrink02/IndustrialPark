@@ -1,6 +1,7 @@
 ﻿using HipHopFile;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 
 namespace IndustrialPark
@@ -21,6 +22,7 @@ namespace IndustrialPark
         [Category(categoryName)]
         public Delegation ReceiveEventDelegation { get; set; }
         [Category(categoryName), ValidReferenceRequired]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public AssetID[] Items { get; set; }
 
         public AssetGRUP(string assetName) : base(assetName, AssetType.Group, BaseAssetType.Group)

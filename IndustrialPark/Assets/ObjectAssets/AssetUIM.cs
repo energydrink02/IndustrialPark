@@ -1,6 +1,7 @@
 ﻿using HipHopFile;
 using System;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 
 namespace IndustrialPark
@@ -17,6 +18,7 @@ namespace IndustrialPark
         [Category(categoryName)]
         public AssetSingle LoopTime { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public UIMCommand[] Commands { get; set; }
 
         public AssetUIM(string assetName) : base(assetName, AssetType.UserInterfaceMotion, BaseAssetType.UIM)

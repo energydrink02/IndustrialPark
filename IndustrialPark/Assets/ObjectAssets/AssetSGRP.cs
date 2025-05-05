@@ -1,6 +1,7 @@
 ﻿using HipHopFile;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 
 namespace IndustrialPark
@@ -72,6 +73,7 @@ namespace IndustrialPark
         public int PszGroupName { get; set; }
 
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public SoundGroupInfo[] Entries { get; set; }
 
         public AssetSGRP(string assetName) : base(assetName, AssetType.SoundGroup, BaseAssetType.SoundGroup)

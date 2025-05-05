@@ -3,6 +3,7 @@ using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 using static IndustrialPark.ArchiveEditorFunctions;
 
@@ -165,10 +166,12 @@ namespace IndustrialPark
         }
 
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public MinfReference[] References { get; set; }
 
         private MinfParam[] _parameters;
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public MinfParam[] Parameters
         {
             get => _parameters;

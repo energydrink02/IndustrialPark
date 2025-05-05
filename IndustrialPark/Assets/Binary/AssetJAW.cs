@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 
 namespace IndustrialPark
@@ -17,6 +18,12 @@ namespace IndustrialPark
         {
             JawData = new byte[0];
         }
+
+        public EntryJAW(Game game) : this()
+        {
+            _game = game;
+        }
+
         public EntryJAW(AssetID soundAssetID, byte[] jawData)
         {
             Sound = soundAssetID;
@@ -53,6 +60,7 @@ namespace IndustrialPark
         public override string AssetInfo => $"{JAW_Entries.Length} entries";
 
         [Category("Jaw Data")]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public EntryJAW[] JAW_Entries { get; set; }
 
         public AssetJAW(string assetName) : base(assetName, AssetType.JawDataTable)

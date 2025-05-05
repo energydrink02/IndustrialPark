@@ -2,6 +2,7 @@
 using SharpDX;
 using System;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 
 namespace IndustrialPark
@@ -30,6 +31,7 @@ namespace IndustrialPark
         [Category(categoryName)]
         public byte RenderDestBlendMode { get; set; }
         [Category(categoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public ParticleCommand[] Commands { get; set; }
         [Category(categoryName)]
         public FlagBitmask ParFlags { get; set; } = IntFlagsDescriptor();

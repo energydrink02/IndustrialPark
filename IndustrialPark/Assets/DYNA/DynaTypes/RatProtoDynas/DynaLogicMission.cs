@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace IndustrialPark
 
         private AssetID[] _requiredMission { get; set; }
         [Category(dynaCategoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public AssetID[] RequiredMission
         {
             get => _requiredMission;
@@ -46,6 +48,7 @@ namespace IndustrialPark
         public bool LoadInSlot { get; set; }
         private AssetID[] _task { get; set; }
         [Category(dynaCategoryName)]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public AssetID[] Task
         {
             get => _task;

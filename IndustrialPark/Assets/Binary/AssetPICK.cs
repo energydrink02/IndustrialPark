@@ -1,6 +1,7 @@
 ﻿using HipHopFile;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 
 namespace IndustrialPark
 {
@@ -51,6 +52,7 @@ namespace IndustrialPark
 
         private EntryPICK[] _entries;
         [Category("Pickup Table")]
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public EntryPICK[] Entries
         {
             get => _entries;
