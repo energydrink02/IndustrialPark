@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using static HipHopFile.Functions;
 
@@ -287,9 +288,9 @@ namespace IndustrialPark
                 Layers = new List<Layer>();
 
             progressBar.Close();
-#if DEBUG
-            LogAssetOrder(hipFile.DICT, tempAhdrUglyDict);
-#endif
+//#if DEBUG
+//            LogAssetOrder(hipFile.DICT, tempAhdrUglyDict);
+//#endif
         }
 
         private void LogAssetOrder(Section_DICT DICT, Dictionary<uint, Section_AHDR> tempAhdrUglyDict)
@@ -626,7 +627,7 @@ namespace IndustrialPark
 
                     newAsset = new AssetGeneric(AHDR, game, endianness);
 #if DEBUG
-                    string folder = "build_test" + Path.GetFileName(currentlyOpenFilePath) + "_out\\";
+                    string folder = Path.Combine(Assembly.GetExecutingAssembly().Location, "build_test" + Path.GetFileName(currentlyOpenFilePath) + "_out\\");
                     if (!Directory.Exists(folder))
                         Directory.CreateDirectory(folder);
                     string assetName = $"[{AHDR.assetType}] {AHDR.ADBG.assetName}";
