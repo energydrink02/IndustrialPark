@@ -41,7 +41,7 @@ namespace IndustrialPark
             if (i < flagNames.Length && flagNames[i] != null)
                 flagName = flagNames[i];
             else
-                flagName = $"UnknownFlag_{i}";
+                flagName = $"UnknownFlag_{i:D2}";
 
             dt.AddProperty(typeof(bool), $"Flag_{i}", GetFlag(i), flagName, "", "", true, false, false);
         }
