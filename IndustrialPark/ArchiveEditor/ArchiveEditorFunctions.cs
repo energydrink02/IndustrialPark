@@ -1415,7 +1415,7 @@ namespace IndustrialPark
                     try
                     {
                         AddSoundToSNDI(sound.Data, sound.assetID, sound.assetType, out byte[] soundData);
-                        AHDR.data = soundData;
+                        sound.Data = soundData;
                     }
                     catch (Exception ex)
                     {
@@ -1499,15 +1499,6 @@ namespace IndustrialPark
             {
                 try
                 {
-                    if (overwrite)
-                    {
-                        if (ContainsAsset(AHDR.assetID))
-                            RemoveAsset(AHDR.assetID);
-                        AddAsset(AHDR, game, platform.Endianness(), setTextureDisplay: false);
-                    }
-                    else
-                        AddAssetWithUniqueID(AHDR, game, platform.Endianness(), setTextureDisplay: true);
-
                     if (AHDR.assetType == AssetType.Sound || AHDR.assetType == AssetType.SoundStream)
                     {
                         try
@@ -1520,6 +1511,15 @@ namespace IndustrialPark
                             MessageBox.Show(ex.Message);
                         }
                     }
+
+                    if (overwrite)
+                    {
+                        if (ContainsAsset(AHDR.assetID))
+                            RemoveAsset(AHDR.assetID);
+                        AddAsset(AHDR, game, platform.Endianness(), setTextureDisplay: false);
+                    }
+                    else
+                        AddAssetWithUniqueID(AHDR, game, platform.Endianness(), setTextureDisplay: true);
 
                     UnsavedChanges = true;
                     assetIDs.Add(AHDR.assetID);
