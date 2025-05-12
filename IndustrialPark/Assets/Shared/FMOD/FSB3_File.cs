@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.IO;
 using System.Linq;
 
@@ -11,6 +12,8 @@ namespace IndustrialPark
     {
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public FSB3_Header Header { get; set; }
+
+        [Editor(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))]
         public FSB3_SampleHeader[] SampleHeader { get; set; }
 
         public FSB3_File()
