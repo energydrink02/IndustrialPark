@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HipHopTool", "HipHopTool\Hi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderWareFile", "RenderWareFile\RenderWareFile\RenderWareFile.csproj", "{005F2D00-06DE-4EF9-BFEE-80EFAC49E114}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiveEditor", "ArchiveEditor\ArchiveEditor.csproj", "{2B20165D-B6D3-4FA5-93B4-64EC117BA732}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IndustrialParkTest", "IndustrialParkTest\IndustrialParkTest.csproj", "{BD22CB98-D975-4E37-8707-9FA07C067806}"
 EndProject
 Global
@@ -39,10 +37,6 @@ Global
 		{005F2D00-06DE-4EF9-BFEE-80EFAC49E114}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{005F2D00-06DE-4EF9-BFEE-80EFAC49E114}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{005F2D00-06DE-4EF9-BFEE-80EFAC49E114}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2B20165D-B6D3-4FA5-93B4-64EC117BA732}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2B20165D-B6D3-4FA5-93B4-64EC117BA732}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2B20165D-B6D3-4FA5-93B4-64EC117BA732}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2B20165D-B6D3-4FA5-93B4-64EC117BA732}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BD22CB98-D975-4E37-8707-9FA07C067806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BD22CB98-D975-4E37-8707-9FA07C067806}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD22CB98-D975-4E37-8707-9FA07C067806}.Release|Any CPU.ActiveCfg = Release|Any CPU
