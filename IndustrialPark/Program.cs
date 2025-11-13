@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -37,7 +38,16 @@ namespace IndustrialPark
 
             Application.SetDefaultFont(new System.Drawing.Font(new FontFamily("Microsoft Sans Serif"), 8.25f));
 
-            MainForm = new MainForm();
+            IPSettings ipSettings = null;
+            try
+            {
+                ipSettings = File.Exists(MainForm.pathToSettings) ? JsonConvert.DeserializeObject<IPSettings>(File.ReadAllText(MainForm.pathToSettings)) : null;
+                if (ipSettings != null)
+                    Application.SetColorMode(ipSettings.ColorMode);
+            }
+            catch { }
+
+            MainForm = new MainForm(ipSettings);
 
             if (!Directory.Exists(MainForm.userTemplatesFolder))
                 Directory.CreateDirectory(MainForm.userTemplatesFolder);

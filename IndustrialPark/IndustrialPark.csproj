@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
+	<LangVersion>preview</LangVersion>
     <OutputType>WinExe</OutputType>
 	<ApplicationDefaultFont>Microsoft Sans Serif, 8.25pt</ApplicationDefaultFont>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -45,7 +46,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <Company>Heavy Iron Modding</Company>
-    <Copyright>Copyright ©  2025 igorseabra4/EnergyDrink</Copyright>
+    <Copyright>Copyright ©  2025 igorseabra4/Kevin</Copyright>
 	<AssemblyVersion>$([System.DateTime]::UtcNow.ToString("yyyy.MM.dd"))</AssemblyVersion>
 	<ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
