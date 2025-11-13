@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -25,7 +26,7 @@ namespace IndustrialPark
         protected override CollectionForm CreateCollectionForm()
         {
             CollectionForm form = base.CreateCollectionForm();
-            form.TopMost = true; // Fix winforms bug https://github.com/dotnet/winforms/issues/6190
+            form.TopMost = true; // Fix winforms bug https://github.com/dotnet/winforms/issues/6190 (still not fixed in .NET 10 btw, thanks microsoft)
             form.Size += new Size(50, 50); // and make it a bigger too :)
             return form;
         }
@@ -50,7 +51,7 @@ namespace IndustrialPark
 
             if (value is Array array)
             {
-                if (CollectionType.GetElementType().IsClass && context?.Instance is DynamicTypeDescriptor dtd)
+                if (CollectionItemType is { IsClass: true, IsArray: false} && context?.Instance is DynamicTypeDescriptor dtd)
                 {
                     _isDynamicTypeDescriptor = true;
 
@@ -71,13 +72,11 @@ namespace IndustrialPark
 
                     var result = ((List<DynamicTypeDescriptor>)base.EditValue(context, provider, newValue)).Select(dt => dt.Component).ToList();
 
-                    Type singleType = CollectionType.GetElementType();
-                    if (singleType != null)
+                    if (CollectionItemType != null)
                     {
-                        Array typedArray = Array.CreateInstance(singleType, result.Count);
+                        Array typedArray = Array.CreateInstance(CollectionItemType, result.Count);
                         for (int i = 0; i < result.Count; i++)
                         {
-                            //typedArray.SetValue(Convert.ChangeType(result[i], singleType), i);
                             typedArray.SetValue(result[i], i);
                         }
                         return typedArray;
@@ -85,22 +84,31 @@ namespace IndustrialPark
                 }
                 else
                 {
+                    if (CollectionItemType is { IsArray: true } )
+                    {
+                        TypeDescriptor.AddAttributes(CollectionItemType, new Attribute[]
+                        {
+                            new EditorAttribute(typeof(DynamicTypeDescriptorCollectionEditor), typeof(UITypeEditor))    
+                        });
+                    }
+
                     List<object> newValue = new(array.Length);
                     foreach (var item in array)
+                    {
                         newValue.Add(item);
+                    }
 
                     var result = base.EditValue(context, provider, newValue);
 
                     if (result is IList ilist)
                     {
-                        Type singleType = CollectionType.GetElementType();
-                        if (singleType != null)
+                        if (CollectionItemType != null)
                         {
-                            Array typedArray = Array.CreateInstance(singleType, ilist.Count);
+                            Array typedArray = Array.CreateInstance(CollectionItemType, ilist.Count);
                             for (int i = 0; i < ilist.Count; i++)
                             {
-                                if (!singleType.IsInstanceOfType(ilist[i]))
-                                    throw new InvalidCastException($"item at index {i} is not of expected type {singleType.FullName}");
+                                if (!CollectionItemType.IsInstanceOfType(ilist[i]))
+                                    throw new InvalidCastException($"item at index {i} is not of expected type {CollectionItemType.FullName}");
                                 typedArray.SetValue(ilist[i], i);
                             }
                             return typedArray;
@@ -114,20 +122,19 @@ namespace IndustrialPark
 
         protected override object CreateInstance(Type itemType)
         {
-            Type type = CollectionType.GetElementType();
-            ConstructorInfo constructor = type?.GetConstructor([typeof(Game)]);
+            ConstructorInfo constructor = CollectionItemType?.GetConstructor([typeof(Game)]);
 
             object instance;
 
             if (constructor != null)
                 instance = constructor.Invoke(new object[] { _game });
             else
-                instance = Activator.CreateInstance(type ?? itemType) ?? throw new InvalidOperationException("Cannot create instance of the specified type.");
+                instance = Activator.CreateInstance(CollectionItemType ?? itemType) ?? throw new InvalidOperationException("Cannot create instance of the specified type.");
 
             if (!_isDynamicTypeDescriptor)
                 return instance;
 
-            DynamicTypeDescriptor dt = new DynamicTypeDescriptor(type);
+            DynamicTypeDescriptor dt = new DynamicTypeDescriptor(CollectionItemType);
             if (instance is GenericAssetDataContainer gadc)
                 gadc.SetDynamicProperties(dt);
             return dt.FromComponent(instance);
