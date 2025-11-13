@@ -23,7 +23,7 @@ The tool (whose namesake is one of the levels in Battle For Bikini Bottom) can c
 
 ## Installation
 > [!IMPORTANT]
-> Industrial Park is compatible with **Windows** only (Windows 10 Version 1607 or later), and requires [.NET Desktop Runtime 8.x](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) and Direct3D 11 support.
+> Industrial Park is compatible with **Windows** only (Windows 10 Version 1607 or later), and requires [.NET Desktop Runtime 10.x](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) and Direct3D 11 support.
 
 1. Download the [latest version](https://github.com/energydrink02/IndustrialPark/releases/latest) from releases.
 2. Extract the .zip somewhere and launch IndustrialPark.exe.
